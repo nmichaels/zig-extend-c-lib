@@ -4,6 +4,6 @@
 #include <stdint.h>
 
 // Add two numbers together and return the sum.
-int32_t add(int32_t a, int32_t b);
+int32_t add_i32(int32_t a, int32_t b);
 
 #endif
