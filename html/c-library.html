@@ -23,7 +23,7 @@
 #include &lt;stdint.h&gt;
 
 // Add two numbers together and return the sum.
-int32_t add_i32(int32_t a, int32_t b);
+int32_t add(int32_t a, int32_t b);
 
 #endif
 
@@ -33,7 +33,7 @@ int32_t add_i32(int32_t a, int32_t b);
 // add.c
 #include "add.h"
 
-int32_t add_i32(int32_t a, int32_t b)
+int32_t add(int32_t a, int32_t b)
 {
     return a + b;
 }
@@ -49,7 +49,7 @@ int32_t add_i32(int32_t a, int32_t b)
 
 int main(void)
 {
-    printf("7 + 3 = %"PRIi32"\n", add_i32(7, 3));
+    printf("7 + 3 = %"PRIi32"\n", add(7, 3));
     return 0;
 }
 
@@ -99,12 +99,12 @@ Next, try `zig build --help` or `zig build test`
 const std = @import("std");
 const testing = std.testing;
 
-export fn add_i32(a: i32, b: i32) i32 {
+export fn add(a: i32, b: i32) i32 {
     return a + b;
 }
 
 test "basic add functionality" {
-    testing.expect(add_i32(3, 7) == 10);
+    testing.expect(add(3, 7) == 10);
 }
       </code></pre>
       <p>and the default <code>build.zig</code>:</p>
