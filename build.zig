@@ -1,6 +1,7 @@
-const Builder = @import("std").build.Builder;
+const std = @import("std");
+const Build = std.Build;
 
-pub fn build(b: *Builder) void {
+pub fn build(b: *Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
@@ -17,16 +18,18 @@ pub fn build(b: *Builder) void {
 
     switch (optimize) {
         .Debug, .ReleaseSafe => lib.bundle_compiler_rt = true,
-        .ReleaseFast, .ReleaseSmall => lib.disable_stack_probing = true,
+        .ReleaseFast, .ReleaseSmall => {},
     }
-    lib.force_pic = true;
+    lib.pie = true;
 
-    var main_tests = b.addTest(.{
+    const main_tests = b.addTest(.{
         .root_source_file = .{ .path = "src/main.zig" },
         .target = target,
         .optimize = optimize,
     });
 
+    const run_main_tests = b.addRunArtifact(main_tests);
+
     const test_step = b.step("test", "Run library tests");
-    test_step.dependOn(&main_tests.step);
+    test_step.dependOn(&run_main_tests.step);
 }
