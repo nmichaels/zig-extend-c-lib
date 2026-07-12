@@ -1,6 +1,7 @@
 # Makefile
 CC=gcc
 CFLAGS=-Wall -Werror -Wextra -Os -fPIE
+ZFLAGS=-Doptimize=Debug
 LD=ld
 LDFLAGS=-melf_x86_64 -r --whole-archive
 ZIGOUT=zig-out/lib
@@ -16,7 +17,7 @@ default: main
 
 $(ZIGOUT)/libadd.a: $(ZIG_SRCS)
 	zig fmt build.zig src/*.zig
-	zig build
+	zig build $(ZFLAGS)
 
 libi32math.a: $(ZIGOUT)/libadd.a mul.o
 	$(LD) $(LDFLAGS) $(LPATH) -o $@ $^

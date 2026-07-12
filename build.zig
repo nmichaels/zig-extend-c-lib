@@ -1,35 +1,28 @@
 const std = @import("std");
-const Build = std.Build;
 
-pub fn build(b: *Build) void {
+pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
-    const lib = b.addStaticLibrary(
-        .{
-            .name = "add",
-            .root_source_file = b.path("src/main.zig"),
-            .target = target,
-            .optimize = optimize,
-        },
-    );
-
-    b.installArtifact(lib);
-
-    switch (optimize) {
-        .Debug, .ReleaseSafe => lib.bundle_compiler_rt = true,
-        .ReleaseFast, .ReleaseSmall => {},
-    }
-    lib.pie = true;
-
-    const main_tests = b.addTest(.{
-        .root_source_file = b.path("src/main.zig"),
+    const mod = b.addModule("add", .{
+        .root_source_file = b.path("src/root.zig"),
         .target = target,
         .optimize = optimize,
+        .pic = true,
     });
 
-    const run_main_tests = b.addRunArtifact(main_tests);
+    const lib = b.addLibrary(.{
+        .name = "add",
+        .root_module = mod,
+    });
+    b.installArtifact(lib);
 
-    const test_step = b.step("test", "Run library tests");
-    test_step.dependOn(&run_main_tests.step);
+    const mod_tests = b.addTest(.{
+        .root_module = mod,
+    });
+
+    const run_mod_tests = b.addRunArtifact(mod_tests);
+
+    const test_step = b.step("test", "Run tests");
+    test_step.dependOn(&run_mod_tests.step);
 }
